@@ -73,7 +73,7 @@ class FileStorage:
         """ retrieve one object if it exist """
         if cls is not None and isinstance(id, str):
             for key, value in self.__objects.items():
-                if (cls == value.__class__ or cls == value.__class__.__name__) and id == int(key.split('.')[1]):
+                if (cls == value.__class__ or cls == value.__class__.__name__) and id == key.split('.')[1]:
                     return value
         return None
 
