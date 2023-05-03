@@ -135,14 +135,14 @@ def search_places():
     states_data = None
     cities_data = None
     if json_data is None:
-        abort(404)
+        abort(400, 'Not a JSON')
     if 'states' in json_data and json_data['states'] != []:
         states_data = json_data['states']
     if 'cities' in json_data and json_data['cities'] != []:
         cities_data = json_data['cities']
     if len(json_data) == 0 or (states_data is None and cities_data is None):
         places_objs = [obj for obj in all_places]
-    elif json_data['cities'] == []:
+    elif cities_data is None:
         states_json = json_data['states']
         valid_states = [state for state in all_states
                         if state.id in states_json]
@@ -151,7 +151,7 @@ def search_places():
             valid_cities.extend(state.cities)
         for city in valid_cities:
             places_objs.extend(city.places)
-    elif json_data['states'] == []:
+    elif states_data is None:
         cities_json = json_data['cities']
         valid_cities = [city for city in all_cities if city.id in cities_json]
         for city in valid_cities:
