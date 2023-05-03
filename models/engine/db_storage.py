@@ -81,12 +81,12 @@ class DBStorage:
             if (cls is not None and (cls == classes[clss] or cls == clss))\
                     and isinstance(Id, str):
 
-                objs = self.__session.query(classes[clss]).all();
+                objs = self.__session.query(classes[clss]).all()
                 for obj in objs:
                     if obj.id == str(Id):
                         return obj
         return None
-        
+
     def count(self, cls=None):
         """ return the number of objects in the storage """
         count = 0
@@ -94,4 +94,3 @@ class DBStorage:
             if cls is None or cls == classes[clss] or cls == clss:
                 count += self.__session.query(classes[clss]).count()
         return count
-        
