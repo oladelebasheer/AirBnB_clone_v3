@@ -173,8 +173,8 @@ def search_places():
     if 'amenities' in json_data\
             and len(json_data['amenities']):
         place_objs = [place.to_dict() for place in places_objs if
-                       all(x in [a.id for a in place.amenities] for x in
-                           json_data['amenities'])]
+                      all(x in [a.id for a in place.amenities] for x in
+                          json_data['amenities'])]
         for place in place_objs:
             amens = [amen.to_dict() for amen in place['amenities']]
             place['amenities'] = amens

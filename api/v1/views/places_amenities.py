@@ -18,17 +18,21 @@ def list_place_amenities(place_id):
         abort(404)
     list_amenities_dict = []
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        list_amenities = [obj.amenities for obj in places if obj.id == place_id]
+        list_amenities = [obj.amenities for obj in
+                          places if obj.id == place_id]
         if list_amenities[0] != []:
             list_amenities_dict = [obj.to_dict() for obj in list_amenities[0]]
         return jsonify(list_amenities_dict)
     else:
-        list_amenities = [obj.amenities for obj in places if obj.id == place_id]
+        list_amenities = [obj.amenities for obj in
+                          places if obj.id == place_id]
         if list_amenities[0] != []:
             list_amenities_dict = [obj.to_dict() for obj in list_amenities[0]]
         return jsonify(list_amenities_dict)
 
-@app_views.route('places/<place_id>/amenities/<amenity_id>', methods=['DELETE'])
+
+@app_views.route('places/<place_id>/amenities/<amenity_id>',
+                 methods=['DELETE'])
 def delete_place_amenity(place_id, amenity_id):
     '''Deletes an Amenity object'''
     all_amenities = storage.all("Amenity").values()
@@ -36,7 +40,7 @@ def delete_place_amenity(place_id, amenity_id):
     amenity_obj = [obj for obj in all_amenities
                    if obj.id == amenity_id]
     place_obj = [obj for obj in all_places
-                   if obj.id == place_id]
+                 if obj.id == place_id]
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         place_amenities = [obj.amenities for obj in all_places
                            if obj.id == place_id]
@@ -45,10 +49,11 @@ def delete_place_amenity(place_id, amenity_id):
             abort(404)
         place_amenities[0].remove(amenity_obj[0])
     else:
-        place_amenities = [obj.amenity_ids for obj in all_places if obj.id == place_id]
+        place_amenities = [obj.amenity_ids for obj in all_places if
+                           obj.id == place_id]
         if amenity_obj == [] or place_obj == [] or\
-            place_obj[0].id not in place_amenities[0]:
-                abort(404)
+                place_obj[0].id not in place_amenities[0]:
+            abort(404)
         place_amenities[0].remove(amenity_obj[0].id)
     storage.save()
     return jsonify({}), 200
@@ -64,7 +69,7 @@ def link_place_amenity(place_id, amenity_id):
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         place_amenities = [obj.amenities for obj in all_places
                            if obj.id == place_id]
-        
+
         if amenity_obj == [] or place_amenities == []:
             abort(404)
         if amenity_obj[0] not in place_amenities[0]:
@@ -74,8 +79,9 @@ def link_place_amenity(place_id, amenity_id):
         else:
             return jsonify(amenity_obj[0].to_dict()), 200
     else:
-        place_amenities = [obj.amenity_ids for obj in all_places if obj.id == place_id]
-         
+        place_amenities = [obj.amenity_ids for obj in
+                           all_places if obj.id == place_id]
+
         if amenity_obj == [] or place_amenities == []:
             abort(404)
         if amenity_obj[0] not in place_amenities[0]:
@@ -84,5 +90,3 @@ def link_place_amenity(place_id, amenity_id):
             return jsonify(list(amenity_obj[0])), 201
         else:
             return jsonify(list(amenity_obj[0].id)), 200
-    
-    
