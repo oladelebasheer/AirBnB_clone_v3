@@ -22,7 +22,7 @@ if __name__ == "__main__":
     
     """ POST /api/v1/places_search
     """
-    r = requests.post("http://0.0.0.0:5050/api/v1/places_search", data=json.dumps({ 'states': [state_id] }), headers={ 'Content-Type': "application/json" })
+    r = requests.post("http://0.0.0.0:5050/api/v1/places_search", data=json.dumps({}), headers={ 'Content-Type': "application/json" })
     print(state_id)
     r_j = r.json()
     print(len(r_j))
