@@ -13,17 +13,20 @@ from os import getenv
 def list_place_amenities(place_id):
     '''Retrieves a list of all Amenity objects of a place'''
     places = storage.all("Place").values()
+    place = [place for place in places if place.id == place_id]
+    if place == []:
+        abort(404)
+    list_amenities_dict = []
     if getenv('HBNB_TYPE_STORAGE') == 'db':
         list_amenities = [obj.amenities for obj in places if obj.id == place_id]
-        if list_amenities == []:
-            abort(404)
-        list_amenities_dict = [obj.to_dict() for obj in list_amenities[0]]
+        if list_amenities[0] != []:
+            list_amenities_dict = [obj.to_dict() for obj in list_amenities[0]]
         return jsonify(list_amenities_dict)
     else:
-        list_amenities = [obj.amenity_ids for obj in places if obj.id == place_id]
-        if list_amenities == []:
-            abort(404)
-        return jsonify(list_amenities[0])
+        list_amenities = [obj.amenities for obj in places if obj.id == place_id]
+        if list_amenities[0] != []:
+            list_amenities_dict = [obj.to_dict() for obj in list_amenities[0]]
+        return jsonify(list_amenities_dict)
 
 @app_views.route('places/<place_id>/amenities/<amenity_id>', methods=['DELETE'])
 def delete_place_amenity(place_id, amenity_id):
@@ -38,8 +41,9 @@ def delete_place_amenity(place_id, amenity_id):
         place_amenities = [obj.amenities for obj in all_places
                            if obj.id == place_id]
         if amenity_obj == [] or place_obj == [] or\
-                place_obj[0] not in place_amenities[0]:
+                amenity_obj[0] not in place_amenities[0]:
             abort(404)
+        place_amenities[0].remove(amenity_obj[0])
     else:
         place_amenities = [obj.amenity_ids for obj in all_places if obj.id == place_id]
         if amenity_obj == [] or place_obj == [] or\
@@ -48,6 +52,7 @@ def delete_place_amenity(place_id, amenity_id):
         place_amenities[0].remove(amenity_obj[0].id)
     storage.save()
     return jsonify({}), 200
+
 
 @app_views.route('places/<place_id>/amenities/<amenity_id>', methods=['POST'])
 def link_place_amenity(place_id, amenity_id):

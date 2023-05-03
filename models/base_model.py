@@ -68,6 +68,8 @@ class BaseModel:
         if 'password' in new_dict and getenv('HBNB_TYPE_STORAGE') == 'bd':
             del new_dict['password']
         new_dict["__class__"] = self.__class__.__name__
+        if 'password' in new_dict:
+            del new_dict['password']
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
         return new_dict

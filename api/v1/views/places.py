@@ -132,12 +132,17 @@ def search_places():
     all_places = storage.all('Place').values()
 
     json_data = request.get_json()
-    if not json_data:
-        abort(404)
-    if len(json_data) == 0 or (json_data['states'] == []
-                               and json_data['cities'] == []):
-        places_objs = [obj.to_dict() for obj in all_places]
-    elif json_data['cities'] == []:
+    states_data = None
+    cities_data = None
+    if json_data is None:
+        abort(400, 'Not a JSON')
+    if 'states' in json_data and json_data['states'] != []:
+        states_data = json_data['states']
+    if 'cities' in json_data and json_data['cities'] != []:
+        cities_data = json_data['cities']
+    if len(json_data) == 0 or (states_data is None and cities_data is None):
+        places_objs = [obj for obj in all_places]
+    elif cities_data is None:
         states_json = json_data['states']
         valid_states = [state for state in all_states
                         if state.id in states_json]
@@ -146,7 +151,7 @@ def search_places():
             valid_cities.extend(state.cities)
         for city in valid_cities:
             places_objs.extend(city.places)
-    elif json_data['states'] == []:
+    elif states_data is None:
         cities_json = json_data['cities']
         valid_cities = [city for city in all_cities if city.id in cities_json]
         for city in valid_cities:
@@ -165,9 +170,14 @@ def search_places():
         for city in valid_cities:
             if city not in valid_state_cities:
                 places_objs.extend(city.places)
-    if json_data['amenities'] is not None\
-            and len(json_data['amenities'] != 0):
-        places_objs = [place for place in places_objs if
+    if 'amenities' in json_data\
+            and len(json_data['amenities']):
+        place_objs = [place.to_dict() for place in places_objs if
                        all(x in [a.id for a in place.amenities] for x in
                            json_data['amenities'])]
-    return jsonify(places_objs)
+        for place in place_objs:
+            amens = [amen.to_dict() for amen in place['amenities']]
+            place['amenities'] = amens
+        places_objs = place_objs
+        return jsonify(places_objs)
+    return jsonify([place.to_dict() for place in places_objs])
