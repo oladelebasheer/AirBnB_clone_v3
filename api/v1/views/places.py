@@ -162,12 +162,13 @@ def search_places():
             places_objs.extend(city.places)
         cities_json = json_data['cities']
         valid_cities = [city for city in all_cities if city.id in cities_json]
+        print(valid_cities[0].to_dict()) if len(valid_cities) > 0 else print("")
         for city in valid_cities:
             if city not in valid_state_cities:
                 places_objs.extend(city.places)
-    if json_data['amenities'] is not None\
+    if 'amenitites' in json_data\
             and len(json_data['amenities'] != 0):
         places_objs = [place for place in places_objs if
                        all(x in [a.id for a in place.amenities] for x in
                            json_data['amenities'])]
-    return jsonify(places_objs)
+    return jsonify([place.to_dict() for place in places_objs])
