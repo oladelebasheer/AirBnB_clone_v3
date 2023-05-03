@@ -171,4 +171,5 @@ def search_places():
         places_objs = [place for place in places_objs if
                        all(x in [a.id for a in place.amenities] for x in
                            json_data['amenities'])]
-    return jsonify([place.to_dict() for place in places_objs])
+        return jsonify([place.to_dict() for place in places_objs])
+    return jsonify(place_objs)
