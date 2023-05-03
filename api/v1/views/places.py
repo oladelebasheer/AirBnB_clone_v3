@@ -122,6 +122,7 @@ def updates_place(place_id):
     storage.save()
     return jsonify(place_obj[0]), 200
 
+
 @app_views.route('/places_search', methods=['POST'])
 def search_places():
     ''' search for places in cities and states '''
@@ -133,12 +134,13 @@ def search_places():
     json_data = request.get_json()
     if not json_data:
         abort(404)
-    if len(json_data) == 0 or (json_data['states'] == []\
-            and json_data['cities'] == []):
+    if len(json_data) == 0 or (json_data['states'] == []
+                               and json_data['cities'] == []):
         places_objs = [obj.to_dict() for obj in all_places]
     elif json_data['cities'] == []:
         states_json = json_data['states']
-        valid_states = [state for state in all_states if state.id in states_json]
+        valid_states = [state for state in all_states
+                        if state.id in states_json]
         valid_cities = []
         for state in valid_states:
             valid_cities.extend(state.cities)
@@ -151,7 +153,8 @@ def search_places():
             places_objs.extend(city.places)
     else:
         states_json = json_data['states']
-        valid_states = [state for state in all_states if state.id in states_json]
+        valid_states = [state for state in all_states
+                        if state.id in states_json]
         valid_state_cities = []
         for state in valid_states:
             valid_state_cities.extend(state.cities)
@@ -164,7 +167,7 @@ def search_places():
                 places_objs.extend(city.places)
     if json_data['amenities'] is not None\
             and len(json_data['amenities'] != 0):
-        places_objs = [place for place in places_objs if\
-                       all(x in [a.id for a in place.amenities] for x in\
+        places_objs = [place for place in places_objs if
+                       all(x in [a.id for a in place.amenities] for x in
                            json_data['amenities'])]
-    return jsonify(places_objs)    
+    return jsonify(places_objs)

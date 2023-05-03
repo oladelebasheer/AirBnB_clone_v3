@@ -66,7 +66,7 @@ def updates_user(user_id):
     user_obj = [obj.to_dict() for obj in all_users if obj.id == user_id]
     if user_obj == []:
         abort(404)
-    if not request.is_json():
+    if not request.get_json():
         abort(400, 'Not a JSON')
     try:
         user_obj[0]['password'] = request.json['password']
@@ -89,7 +89,6 @@ def updates_user(user_id):
                 pass
             try:
                 if request.json['password'] is not None:
-                    print(request.json['password'])
                     obj.password = request.json['password']
             except:
                 pass
